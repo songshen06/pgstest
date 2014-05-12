@@ -77,7 +77,7 @@ def sendcontent_nop(ip,so,m):
 #input: HDX IP #
 #action: send content from HDX #
 #time : 30 seconds
-def sendcontent(ip,so):
+'''def sendcontent(ip,so):
 	print "%s will send content\n" %ip
 
 	runtime = int(runtime)
@@ -127,5 +127,5 @@ def sendcontent_nop(ip,so):
 	child.expect('->')
 	child.sendline('exit')
 	child.sendline('\r\n')
-	print 'send content finish!\n'
+	print 'send content finish!\n'''
 
