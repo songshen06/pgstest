@@ -295,12 +295,21 @@ def sub_content(ep,so,m):
 		print 'eplist is %s' %ep
 		sp = len(ep)
 	if int(sp) > 0:
-		for i in ep4:
-			print 'i will send content'
+		for i in ep:
+			print '%s will send content' %i
 			EP.sendcontent_nop(i,so,m)
-	
+def sub_content_p(ep,so,m):
+	if len(ep)>0:
+		ep = ep.split(',')
+		print 'eplist is %s' %ep
+		sp = len(ep)
+	if int(sp) > 0:
+		for i in ep:
+			print '%s will send content' %i
+			EP.sendcontent(i,so,m)	
 
 def content_test():
+	EPpass = config.get('EP','password') # from rcm.ini
 	ep2 = config.get('EP','ep2')
 	ep3 = config.get('EP','ep3')
 	ep4 = config.get('EP','ep4')
@@ -312,9 +321,9 @@ def content_test():
 	sub_content(ep2,2,m)
 	sub_content(ep3,3,m)
 	sub_content(ep4,4,m)
-	sub_content(epp2,2,m)
-	sub_content(epp3,3,m)
-	sub_content(epp4,4,m)
+	sub_content_p(epp2,2,m)
+	sub_content_p(epp3,3,m)
+	sub_content_p(epp4,4,m)
 def test() :
 	rcm =RCM(rcmadd)
 	token = rcm.get_token()
@@ -359,13 +368,13 @@ def test() :
 	time.sleep(45)
 #### main script start here####	
 	
-#script,filename = argv	
-filename = os.path.join('.', 'rcm.ini')
+script,filename = argv	
+#filename = os.path.join('.', 'rcm.ini')
 config = ConfigParser()
 config.read(filename)
 #script,userpass,run_times = argv
 userpass = config.get('RCM','userpass') #from rcm.ini
-EPpass = config.get('EP','password') # from rcm.ini
+
 counter = config.get('RCM','counter')	#from rcm.ini
 print "%s %s \n" %(userpass,counter)
 runtime = config.get('TIME', 'runtime')  #from rcm.ini
