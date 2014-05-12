@@ -290,7 +290,7 @@ def del_schedule_meeting(rcmadd,meetingID,token):
 	del_meeting = requests.delete(url_del_meeting,headers=headers)
 	print del_meeting.text
 def sub_content(ep,so,m):
-	if len(ep)>0
+	if len(ep)>0:
 		ep = ep.split(',')
 		print 'eplist is %s' %ep
 		sp = len(ep)
@@ -373,9 +373,8 @@ waittime = config.get('TIME','waittime') #from rcm.ini
 meeting_counter = int(counter)
 rcmadd = config.get('URL', 'rcmadd') # from rcm.ini 
 T_F = config.get('endpoint', 'T_F')  #from rcm.ini
-master = config.get('endpoint','master') #from rcm.ini
-
-
+#master = config.get('endpoint','master') #from rcm.ini
+m = config.get('sound','m') #from rcm.ini
 runtime = int(runtime)
 waittime = runtime + int(waittime) # consider the send content time is 30*3, and time.slee(30)
 runtime = runtime*1000
