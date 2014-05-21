@@ -1,3 +1,4 @@
+import pexpect
 # If you want to use following function , be ware you should use install 3rd pexpect.#
 #*************sendcontent******************#
 #Need: IP of EP,  Source of content,
@@ -72,7 +73,7 @@ def sendcontent_nop(ip,so,m):
 	child.expect('->')
 	child.sendline('exit')
 	child.sendline('\r\n')
-	print ip + 'send content finish!\n'
+	print ip + ' send content finish!\n'
 #**********************************
 #input: HDX IP #
 #action: send content from HDX #

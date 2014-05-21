@@ -26,6 +26,7 @@ import os
 import sys
 #----define a class to add number value ------#
 import EP
+import pexpect
 class MyList(list):
     def append(self, value):
         super(MyList, self).append(value)
@@ -291,20 +292,18 @@ def del_schedule_meeting(rcmadd,meetingID,token):
 	print del_meeting.text
 def sub_content(ep,so,m):
 	if len(ep)>0:
-		ep = ep.split(',')
-		print 'eplist is %s' %ep
+		eplist = ep.split(',')
+		print 'eplist is %s' %eplist
 		sp = len(ep)
-	if int(sp) > 0:
-		for i in ep:
+		for i in eplist:
 			print '%s will send content' %i
 			EP.sendcontent_nop(i,so,m)
 def sub_content_p(ep,so,m):
 	if len(ep)>0:
-		ep = ep.split(',')
-		print 'eplist is %s' %ep
-		sp = len(ep)
-	if int(sp) > 0:
-		for i in ep:
+		eplist = ep.split(',')
+		print 'eplist is %s' %eplist
+		
+		for i in eplist:
 			print '%s will send content' %i
 			EP.sendcontent(i,so,m)	
 
