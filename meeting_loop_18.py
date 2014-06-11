@@ -285,6 +285,17 @@ class Participants(object):
 		headers = {'Content-type': 'application/json','Accept': 'text/plain'}
 		meeting_terminate = requests.put(url,headers=headers)
 		print meeting_terminate.text
+	def set_letcture(self,endpointID):
+		token = self.token
+		rcmadd = self.link
+		meetingID = self.meetingID
+		self.endpointID= endpointID
+		endpointID= self.endpointID
+		url = rcmadd+'meetings/'+str(meetingID)+'/participants/'+str(endpointID)+'/control/setLecturer?credential='+token
+		print url
+		headers = {'Content-type': 'application/json','Accept': 'text/plain'}
+		meeting_terminate = requests.get(url,headers=headers)
+		print meeting_terminate.text
 def del_schedule_meeting(rcmadd,meetingID,token):
 	url_del_meeting = rcmadd+'meetings/'+str(meetingID)+'?token='+token
 	print url_del_meeting 
@@ -363,6 +374,9 @@ def test() :
 	time.sleep(5)
 	content_test()
 	participant = Participants(rcmadd,token,meetingID)
+	for id in endidlist :
+		time.sleep(10)
+		participant.setlecture(id)
 	for id in endidlist :
 		participant.disconnect(id)
 		time.sleep(10)
