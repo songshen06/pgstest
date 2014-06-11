@@ -103,8 +103,9 @@ class RCM(object):
 			#print unit['ip']
 			endpointIP = unit['ip']
 			if endpointIP == master :
+				print 'endpointIP is %s\n' %endpointIP
 				print unit['id']
-			masterID = unit['id']
+				masterID = unit['id']
 			#print type(endpointID)
 		print 'master is %s\n' %masterID
 		return masterID
@@ -137,7 +138,7 @@ class RCM(object):
 		print url_meetings
 		name = time.ctime()
 		layout = '1and5'
-		endpoints = {'startTime':0,'duration':runtime,'layout':layout,'endpointIds':endpointlist,'name':name}
+		endpoints = {'startTime':0,'duration':runtime,'layout':layout,'endpointIds':endpointlist,'name':name,'masterEndpointId':masterID}
 		print endpoints
 		endpoints_json = json.dumps(endpoints) # dump to json format
 		print endpoints_json
@@ -306,8 +307,14 @@ def sub_content_p(ep,so,m):
 		for i in eplist:
 			print '%s will send content' %i
 			EP.sendcontent(i,so,m)	
-
+def create_meeting_test(rcmadd,token):
+	## input : rcmadd and token ##
+	## output: meetingID ##
+	
+	testname = 'create_meeting_test'
+	
 def content_test():
+	testname = 'content_test'
 	EPpass = config.get('EP','password') # from rcm.ini
 	ep2 = config.get('EP','ep2')
 	ep3 = config.get('EP','ep3')
@@ -341,9 +348,9 @@ def test() :
 		time.sleep(10)
 		print "at %s get token again\n" %meeting_counter
 		token = rcm.get_token()'''
-	#masterID = rcm.get_masterID(token,master)
-	rcm.create_meeting(token,endpointlist)  #1.07
-	#rcm.create_meeting_masterID(token,endpointlist,masterID)
+	masterID = rcm.get_masterID(token,master)
+	#rcm.create_meeting(token,endpointlist)  #1.07
+	rcm.create_meeting_masterID(token,endpointlist,masterID)
 	time.sleep(10)
 	meetingID = rcm.get_meetingID(token)
 	meeting = Meeting(rcmadd,token)
