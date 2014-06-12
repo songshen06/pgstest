@@ -25,8 +25,8 @@ import os
 #import pexpect # for control EP
 import sys
 #----define a class to add number value ------#
-import EP
-import pexpect
+#import EP
+
 class MyList(list):
     def append(self, value):
         super(MyList, self).append(value)
@@ -285,7 +285,7 @@ class Participants(object):
 		headers = {'Content-type': 'application/json','Accept': 'text/plain'}
 		meeting_terminate = requests.put(url,headers=headers)
 		print meeting_terminate.text
-	def set_letcture(self,endpointID):
+	def set_lecture(self,endpointID):
 		token = self.token
 		rcmadd = self.link
 		meetingID = self.meetingID
@@ -362,21 +362,22 @@ def test() :
 	masterID = rcm.get_masterID(token,master)
 	#rcm.create_meeting(token,endpointlist)  #1.07
 	rcm.create_meeting_masterID(token,endpointlist,masterID)
-	time.sleep(10)
+	time.sleep(20)
 	meetingID = rcm.get_meetingID(token)
 	meeting = Meeting(rcmadd,token)
-	time.sleep(20)
+	time.sleep(30)
 	endidlist = meeting.get_all_id(meetingID)
 	time.sleep(40)
 	meeting.muteAll(meetingID)
 	time.sleep(40)
 	meeting.unmuteAll(meetingID)
 	time.sleep(5)
-	content_test()
+	#content_test()
+	
 	participant = Participants(rcmadd,token,meetingID)
 	for id in endidlist :
-		time.sleep(10)
-		participant.setlecture(id)
+		time.sleep(15)
+		participant.set_lecture(id)
 	for id in endidlist :
 		participant.disconnect(id)
 		time.sleep(10)
@@ -402,7 +403,7 @@ waittime = config.get('TIME','waittime') #from rcm.ini
 meeting_counter = int(counter)
 rcmadd = config.get('URL', 'rcmadd') # from rcm.ini 
 T_F = config.get('endpoint', 'T_F')  #from rcm.ini
-#master = config.get('endpoint','master') #from rcm.ini
+master = config.get('endpoint','master') #from rcm.ini
 m = config.get('sound','m') #from rcm.ini
 runtime = int(runtime)
 waittime = runtime + int(waittime) # consider the send content time is 30*3, and time.slee(30)

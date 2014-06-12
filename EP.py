@@ -1,4 +1,6 @@
 import pexpect
+import sys
+import time
 # If you want to use following function , be ware you should use install 3rd pexpect.#
 #*************sendcontent******************#
 #Need: IP of EP,  Source of content,
