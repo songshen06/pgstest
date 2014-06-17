@@ -23,7 +23,7 @@ from sys import argv # python meeting_loop_4.py RMX1800 1
 from ConfigParser import ConfigParser# support rcm.ini
 import os
 #import pexpect # for control EP
-import sys
+#import sys
 #----define a class to add number value ------#
 #import EP
 
@@ -110,6 +110,7 @@ class RCM(object):
 		print 'master is %s\n' %masterID
 		return masterID
 	def create_meeting(self,token,endpointlist):
+		print 'create_meeting\n'
 		self.token = token
 		token = self.token
 		self.endpointlist= endpointlist
@@ -124,9 +125,15 @@ class RCM(object):
 		print endpoints_json
 		headers = {'Content-type': 'application/json','Accept': 'text/plain'}
 		meetings=requests.post(url_meetings,data=endpoints_json,headers=headers)
-		print meetings.status_code
-		
+		#print meetings.text
+		meetinglist_dict=json.loads(meetings.text)
+		print "meeinglist is %s" %meetinglist_dict
+		print type(meetinglist_dict)
+		print meetinglist_dict['id']
+		meetingID = meetinglist_dict['id']
+		return meetingID
 	def create_meeting_masterID(self,token,endpointlist,masterID):
+		print 'create_meeting_masterID\n'
 		self.token = token
 		token = self.token
 		self.endpointlist= endpointlist
@@ -145,6 +152,12 @@ class RCM(object):
 		headers = {'Content-type': 'application/json','Accept': 'text/plain'}
 		meetings=requests.post(url_meetings,data=endpoints_json,headers=headers)
 		print meetings.text
+		meetinglist_dict=json.loads(meetings.text)
+		print "meeinglist is %s" %meetinglist_dict
+		print type(meetinglist_dict)
+		print meetinglist_dict['id']
+		meetingID = meetinglist_dict['id']
+		return meetingID
 	def get_meetingID(self,token):
 		start = int(time.time()*1000 - 100*1000)
 		end = int(time.time()*1000 + 7200*1000)
@@ -235,13 +248,15 @@ class Meeting(object):
 		headers = {'Content-type': 'application/json','Accept': 'text/plain'}
 		meeting_terminate = requests.put(url,headers=headers)
 		print meeting_terminate.text
-	def lecture_one_roll(self,meetingID):
+	def lecture_one_roll(self,meetingID,interval):
 		print 'lecture_one_roll'
 		token = self.token
 		rcmadd = self.link
 		self.meetingID = meetingID
 		meetingID = self.meetingID
-		url = rcmapi+'meetings/'+str(meetingID)+'/control/oneClickPoll?credential='+token+'&interval=15'
+		self.interval = interval
+		interval = self.interval
+		url = rcmapi+'meetings/'+str(meetingID)+'/control/oneClickPoll?credential='+token+'&interval='+interval
 		#PUT /api/rest/meetings/173662/control/oneClickPoll?credential=2097014321&interval=30 
 		print url
 		headers = {'Content-type': 'application/json','Accept': 'text/plain'}
@@ -368,14 +383,14 @@ def content_test():
 	sub_content_p(epp2,2,m)
 	sub_content_p(epp3,3,m)
 	sub_content_p(epp4,4,m)
-def letcture_test(token,meetingID,endidlist) :
+def letcture_test(token,meetingID,endidlist,interval) :
 	testname = 'letcture_test'
 	participant = Participants(rcmadd,token,meetingID)
 	for id in endidlist :
 		time.sleep(15)
 		participant.set_lecture(id)
 		meeting = Meeting(rcmadd,token)
-		meeting.lecture_one_roll(meetingID)
+		meeting.lecture_one_roll(meetingID,interval)
 		num = len(endidlist)
 		print num 
 		time_delay = 15*num + 10
@@ -400,10 +415,10 @@ def test() :
 	endpointlist = rcm.get_endpointlist(token)
 	if len(master) > 0 :
 		masterID = rcm.get_masterID(token,master)
-		rcm.create_meeting_masterID(token,endpointlist,masterID)
-	rcm.create_meeting(token,endpointlist)  
+		meetingID =rcm.create_meeting_masterID(token,endpointlist,masterID)
+	meetingID = rcm.create_meeting(token,endpointlist)  
 	time.sleep(20)
-	meetingID = rcm.get_meetingID(token)
+	#meetingID = rcm.get_meetingID(token)
 	meeting = Meeting(rcmadd,token)
 	time.sleep(30)
 	endidlist = meeting.get_all_id(meetingID)
@@ -414,24 +429,35 @@ def test() :
 	time.sleep(5)
 	#content_test()
 	
-	'''participant = Participants(rcmadd,token,meetingID)
-	for id in endidlist :
-		time.sleep(15)
-		participant.set_lecture(id)
-		for layout in layoutlist:
-			time.sleep(10)
-			participant.set_lecture_layout(layout)
-	for id in endidlist :
-		participant.disconnect(id)
-		time.sleep(10)
-		participant.connect(id)
-		time.sleep(10)'''
+	
 	layout_test(token,meetingID)
-	letcture_test(token,meetingID,endidlist)
+	letcture_test(token,meetingID,endidlist,interval)
 	call_and_hangup(token,meetingID,endidlist)
 	time.sleep(100)
 	meeting.terminate(meetingID)
 	time.sleep(45)
+def test_1_for() :
+	rcm =RCM(rcmadd)
+	token = rcm.get_token()
+	endpointlist = rcm.get_endpointlist(token)
+	num_end = len(endpointlist)
+	print 'num_end is %s\n' %num_end
+	s = int(ends( # define the endpoints of per meeting 
+	meeting_id_list = MyList()
+	for i in range (s,num_end,s):
+		print 'i is %s\n' %i
+		endlist = endpointlist[i-5:i]
+		print endlist
+		print type(endlist)
+		meetingID = rcm.create_meeting(token,endlist)  
+		meeting_id_list.append(meetingID) # use class Mylist
+		print meeting_id_list
+	meeting = Meeting(rcmadd,token)
+	
+	time.sleep(300)
+	for meetid in meeting_id_list:
+		time.sleep(1)
+		meeting.terminate(meetid)
 #### main script start here####	
 	
 script,filename = argv	
@@ -448,20 +474,23 @@ waittime = config.get('TIME','waittime') #from rcm.ini
 meeting_counter = int(counter)
 rcmadd = config.get('URL', 'rcmadd') # from rcm.ini 
 rcmapi = config.get('URL', 'rcmapi') # from rcm.ini
-
+interval = config.get('TIME','interval')
 T_F = config.get('endpoint', 'T_F')  #from rcm.ini
 master = config.get('endpoint','master') #from rcm.ini
+ends = config.get('endpoint','ends')
 m = config.get('sound','m') #from rcm.ini
 runtime = int(runtime)
 waittime = runtime + int(waittime) # consider the send content time is 30*3, and time.slee(30)
 runtime = runtime*1000
-layoutlist = ['TWO_BY_TWO','AUTO','LAND_SEVER']
+layoutlist = ['TWO_BY_TWO','AUTO','LAND_SEVER','THREE_BY_THREE']
 
 #print runtime
 #print type(runtime)
 #print waittime
 while 1 :
-	test()
+	test_1_for()
+	time.sleep(10)
+	#test()
 print 'test finish!'
 
 
