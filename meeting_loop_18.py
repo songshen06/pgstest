@@ -221,10 +221,11 @@ class Meeting(object):
 		endidlist = MyList()
 		print endidlist
 		for end in endlist_json:
-			print end['id']
-			endpointID = end['id']
+			#print end['id']
+			if end['type'] != 'LINK' :
+				endpointID = end['id']
 			#print type(endpointID)
-			endidlist.append(endpointID) # use class Mylist
+				endidlist.append(endpointID) # use class Mylist
 		#print 'endpoint list print in endpoint.text!!'
 		print endidlist
 		return endidlist
@@ -442,11 +443,11 @@ def test_1_for() :
 	endpointlist = rcm.get_endpointlist(token)
 	num_end = len(endpointlist)
 	print 'num_end is %s\n' %num_end
-	s = int(ends( # define the endpoints of per meeting 
+	s = int(ends) # define the endpoints of per meeting 
 	meeting_id_list = MyList()
 	for i in range (s,num_end,s):
 		print 'i is %s\n' %i
-		endlist = endpointlist[i-5:i]
+		endlist = endpointlist[i-s:i]
 		print endlist
 		print type(endlist)
 		meetingID = rcm.create_meeting(token,endlist)  
@@ -488,9 +489,9 @@ layoutlist = ['TWO_BY_TWO','AUTO','LAND_SEVER','THREE_BY_THREE']
 #print type(runtime)
 #print waittime
 while 1 :
-	test_1_for()
-	time.sleep(10)
-	#test()
+	#test_1_for()
+	#time.sleep(10)
+	test()
 print 'test finish!'
 
 
